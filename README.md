@@ -6,6 +6,15 @@
 
 Einfach **`index.html` doppelklicken** — läuft direkt im Browser (Chrome/Edge/Firefox), kein Server, kein Internet nötig.
 
+Oder per Docker:
+
+```
+docker build -t how-did-i-end-up-here .
+docker run -p 8080:80 how-did-i-end-up-here
+```
+
+Dann [http://localhost:8080](http://localhost:8080) öffnen.
+
 ## Steuerung
 
 | Taste | Aktion |
