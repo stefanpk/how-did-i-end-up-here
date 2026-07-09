@@ -8,7 +8,7 @@
 // ---------------------------------------------------------- LEVELS
 const LEVELS = [
   {
-    key: 'weed', channel: 'AV-1 · WEED', tape: 'TAPE 1/3', clock: [23, 58],
+    key: 'weed', channel: 'LEVEL 1 · WEED', tape: 'LEVEL 1/3', clock: [23, 58],
     circle: 'KIFFER-FREUNDESKREIS', drug: 'WEED',
     intro: 'Der Abend beim Kiffer-Freundeskreis war gemütlich. Zu gemütlich. ' +
            'Jetzt schwebt der Asphalt und dein Magen schreibt dir Drohbriefe: MUNCHIES. ' +
@@ -17,7 +17,7 @@ const LEVELS = [
     alienEvery: [5.0, 8.0], alienSpeed: [2.2, 3.2], alienHP: 1, alienDmg: 10,
     maxAliens: 6, alienColor: 0x39ff6a,
     bg: 0x0a140f, fogNear: 18, fogFar: 130,
-    fx: { wob: 0.65, wobFreq: 0.8, dbl: 0.0, noise: 0.10, aber: 1.3, sat: 1.3, tint: [0.86, 1.06, 0.9], vig: 0.55 },
+    fx: { wob: 0.5, wobFreq: 0.8, dbl: 0.0, sat: 1.15, tint: [0.93, 1.05, 0.95], vig: 0.35 },
     timeScale: 0.82, sway: 0.15, jitter: 0, breathe: 4.0,
     rauschLabel: 'MUNCHIES', ufoEvery: 0, jointEvery: 22, hallu: true,
     hint: 'WASD: Lauf Richtung ZUHAUSE-Schild. Döner = Leben. Aliens = abknallen.',
@@ -30,7 +30,7 @@ const LEVELS = [
     ],
   },
   {
-    key: 'alk', channel: 'AV-2 · ALKOHOL', tape: 'TAPE 2/3', clock: [1, 34],
+    key: 'alk', channel: 'LEVEL 2 · ALKOHOL', tape: 'LEVEL 2/3', clock: [1, 34],
     circle: 'PARTY-CLIQUE', drug: 'ALKOHOL',
     intro: 'Der Party-Clique konntest du nicht nein sagen. Sieben Shots später schwankt der Boden. ' +
            'Oder du. Doppelt sehen heißt doppelt zielen. Wasser trinken hilft — kurz. ' +
@@ -39,7 +39,7 @@ const LEVELS = [
     alienEvery: [4.0, 6.5], alienSpeed: [2.8, 3.9], alienHP: 2, alienDmg: 12,
     maxAliens: 8, alienColor: 0xb04cff,
     bg: 0x0d0a16, fogNear: 16, fogFar: 120,
-    fx: { wob: 0.38, wobFreq: 1.4, dbl: 0.6, noise: 0.13, aber: 2.2, sat: 1.05, tint: [1.02, 0.96, 1.08], vig: 0.6 },
+    fx: { wob: 0.3, wobFreq: 1.4, dbl: 0.6, sat: 1.02, tint: [1.0, 0.97, 1.05], vig: 0.4 },
     timeScale: 1.0, sway: 0.9, jitter: 0, breathe: 0,
     rauschLabel: 'PROMILLE', ufoEvery: 40, jointEvery: 0, hallu: false, stumble: true,
     hint: 'Du schwankst. Wasser-Flaschen senken den Promille-Pegel.',
@@ -52,7 +52,7 @@ const LEVELS = [
     ],
   },
   {
-    key: 'koks', channel: 'AV-3 · KOKS', tape: 'TAPE 3/3', clock: [3, 12],
+    key: 'koks', channel: 'LEVEL 3 · KOKS', tape: 'LEVEL 3/3', clock: [3, 12],
     circle: 'VIP-HINTERZIMMER', drug: 'KOKS',
     intro: 'Das VIP-Hinterzimmer war ein Fehler. Dein Herz spielt Doppel-Bassdrum, ' +
            'die Welt läuft auf 1.5x Speed und der CRASH kommt näher. ' +
@@ -61,7 +61,7 @@ const LEVELS = [
     alienEvery: [2.4, 4.2], alienSpeed: [3.8, 5.2], alienHP: 2, alienDmg: 15,
     maxAliens: 12, alienColor: 0xff3b3b,
     bg: 0x160a0d, fogNear: 14, fogFar: 115,
-    fx: { wob: 0.22, wobFreq: 3.0, dbl: 0.12, noise: 0.17, aber: 3.2, sat: 1.4, tint: [1.12, 0.9, 0.92], vig: 0.68 },
+    fx: { wob: 0.18, wobFreq: 3.0, dbl: 0.12, sat: 1.2, tint: [1.08, 0.94, 0.95], vig: 0.45 },
     timeScale: 1.15, sway: 0.1, jitter: 1, breathe: 0,
     rauschLabel: 'CRASH IN', crashTime: 105, ufoEvery: 26, jointEvery: 0, hallu: false,
     hint: 'SPRINTE (Shift)! Erreich dein Bett bevor der Crash kommt. Wasser = +Zeit.',
@@ -81,13 +81,13 @@ let levelIdx = 0, L = LEVELS[0];
 let scene, camera, renderer, rt, postScene, postCam, postMat;
 let gun, muzzle, gunRecoil = 0;
 let aliens = [], pickups = [], particles = [], ufos = [], blobs = [], joints = [], loopSounds = [];
-let partyLight = null, homeLight = null;
+let partyLight = null, homeLight = null, moonLight = null, followLight = null;
 
 const P = {
   x: 0, z: 0, yaw: 0, pitch: 0, vx: 0, vz: 0,
   hp: 100, rausch: 0, bob: 0, bobPrev: 0, rollKick: 0, shake: 0,
   ammo: 8, reloading: false, kills: 0, time: 0, dmgTaken: 0,
-  clarity: 0, stumbleT: 5, spawnT: 3, msgT: 8, ufoT: 20, jointT: 8, glitchT: 4,
+  clarity: 0, stumbleT: 5, spawnT: 3, msgT: 8, ufoT: 20, jointT: 8,
   heartT: 1, clockSec: 0,
 };
 let totals = { kills: 0, time: 0, dmg: 0 };
@@ -209,11 +209,16 @@ function scheduleStep(style, step, t) {
 //  RENDERER + VHS POST-SHADER
 // ============================================================
 const canvas = $('c');
-renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
+renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
 camera = new THREE.PerspectiveCamera(70, 1, 0.1, 300);
 camera.rotation.order = 'YXZ';
 
-rt = new THREE.WebGLRenderTarget(640, 400);
+rt = new THREE.WebGLRenderTarget(2, 2);
+if (renderer.capabilities.isWebGL2) rt.samples = 4;
 postScene = new THREE.Scene();
 postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 postMat = new THREE.ShaderMaterial({
@@ -221,9 +226,9 @@ postMat = new THREE.ShaderMaterial({
   uniforms: {
     tDiffuse: { value: rt.texture },
     time:    { value: 0 },
-    uNoise:  { value: 0.08 }, uAber: { value: 1.5 }, uDouble: { value: 0 },
-    uWobAmp: { value: 0.2 }, uWobFreq: { value: 1 }, uVig: { value: 0.5 },
-    uGlitch: { value: 0 },   uPulse: { value: 0 },   uSat: { value: 1.1 },
+    uDouble: { value: 0 },
+    uWobAmp: { value: 0.15 }, uWobFreq: { value: 1 }, uVig: { value: 0.35 },
+    uPulse:  { value: 0 },    uSat: { value: 1.05 },
     uTint:   { value: new THREE.Vector3(1, 1, 1) },
   },
   vertexShader: `
@@ -231,49 +236,42 @@ postMat = new THREE.ShaderMaterial({
     void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`,
   fragmentShader: `
     uniform sampler2D tDiffuse;
-    uniform float time, uNoise, uAber, uDouble, uWobAmp, uWobFreq, uVig, uGlitch, uPulse, uSat;
+    uniform float time, uDouble, uWobAmp, uWobFreq, uVig, uPulse, uSat;
     uniform vec3 uTint;
     varying vec2 vUv;
-    float rand(vec2 co){ return fract(sin(dot(co, vec2(12.9898,78.233))) * 43758.5453); }
     void main(){
       vec2 uv = vUv;
-      uv.x += sin(uv.y*8.0 + time*uWobFreq) * uWobAmp * 0.012;
-      uv.y += cos(uv.x*6.0 + time*uWobFreq*0.7) * uWobAmp * 0.006;
-      float band = step(abs(uv.y - fract(time*0.11)), 0.025) * uGlitch;
-      uv.x += band * (rand(vec2(floor(time*24.0), floor(uv.y*40.0))) - 0.5) * 0.3;
-      uv = (uv - 0.5) * (1.0 - uPulse*0.035) + 0.5;
-      float ab = uAber * 0.0016 + uPulse*0.002;
-      vec3 col;
-      col.r = texture2D(tDiffuse, uv + vec2(ab, 0.0)).r;
-      col.g = texture2D(tDiffuse, uv).g;
-      col.b = texture2D(tDiffuse, uv - vec2(ab, 0.0)).b;
+      uv.x += sin(uv.y*6.0 + time*uWobFreq) * uWobAmp * 0.008;
+      uv.y += cos(uv.x*5.0 + time*uWobFreq*0.7) * uWobAmp * 0.004;
+      uv = (uv - 0.5) * (1.0 - uPulse*0.03) + 0.5;
+      vec3 col = texture2D(tDiffuse, uv).rgb;
       if (uDouble > 0.001) {
-        vec2 off = vec2(sin(time*1.3), cos(time*0.9)) * uDouble * 0.028;
+        vec2 off = vec2(sin(time*1.3), cos(time*0.9)) * uDouble * 0.025;
         vec3 col2 = texture2D(tDiffuse, uv + off).rgb;
         col = mix(col, max(col, col2), 0.5 * min(uDouble*2.0, 1.0));
       }
       col = pow(max(col, 0.0), vec3(1.0/2.2)); // Gamma (linear -> sRGB)
-      col *= 0.82 + 0.18 * sin(uv.y * 800.0 + time*8.0);
-      col += (rand(uv + fract(time*7.13)) - 0.5) * uNoise;
       float g = dot(col, vec3(0.299, 0.587, 0.114));
       col = mix(vec3(g), col, uSat) * uTint;
-      col += uPulse * vec3(0.10, 0.0, 0.02);
+      col += uPulse * vec3(0.08, 0.0, 0.02);
       float d = distance(uv, vec2(0.5));
-      col *= 1.0 - uVig * smoothstep(0.32, 0.78, d);
+      col *= 1.0 - uVig * smoothstep(0.45, 0.85, d);
       gl_FragColor = vec4(col, 1.0);
     }`,
 });
 postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), postMat));
 
-const fx = { wob: 0.2, wobFreq: 1, dbl: 0, noise: 0.08, aber: 1.5, sat: 1.1, vig: 0.5, tint: [1, 1, 1], pulse: 0, glitch: 0 };
+const fx = { wob: 0.15, wobFreq: 1, dbl: 0, sat: 1.05, vig: 0.35, tint: [1, 1, 1], pulse: 0 };
 
 function onResize() {
   const w = window.innerWidth, h = window.innerHeight;
+  if (w < 2 || h < 2) return; // Tab noch nicht sichtbar/vermessen
+  const pr = Math.min(window.devicePixelRatio || 1, 2);
+  renderer.setPixelRatio(pr);
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
-  const rh = 400, rw = Math.round(rh * (w / h));
-  rt.setSize(Math.max(64, rw), rh);
+  rt.setSize(Math.max(64, Math.round(w * pr)), Math.max(64, Math.round(h * pr)));
 }
 window.addEventListener('resize', onResize);
 onResize();
@@ -284,17 +282,17 @@ onResize();
 function canvasTex(w, h, draw) {
   const c = document.createElement('canvas'); c.width = w; c.height = h;
   draw(c.getContext('2d'));
-  const t = new THREE.CanvasTexture(c);
-  t.magFilter = THREE.NearestFilter;
-  return t;
+  return new THREE.CanvasTexture(c);
 }
-const texWindows = canvasTex(128, 256, (g) => {
-  g.fillStyle = '#07070c'; g.fillRect(0, 0, 128, 256);
-  for (let y = 0; y < 12; y++) for (let x = 0; x < 5; x++) {
-    const lit = Math.random() < 0.28;
-    g.fillStyle = lit ? (Math.random() < 0.5 ? '#ffd27f' : '#7fd2ff') : '#101018';
-    g.globalAlpha = lit ? 0.55 + Math.random() * 0.45 : 1;
-    g.fillRect(10 + x * 23, 12 + y * 20, 14, 11);
+const texWindows = canvasTex(256, 512, (g) => {
+  g.fillStyle = '#0a0b12'; g.fillRect(0, 0, 256, 512);
+  for (let y = 0; y < 14; y++) for (let x = 0; x < 6; x++) {
+    const lit = Math.random() < 0.3;
+    const wx = 16 + x * 38, wy = 20 + y * 34;
+    g.fillStyle = '#151824'; g.fillRect(wx - 2, wy - 2, 30, 24); // Rahmen
+    g.fillStyle = lit ? (Math.random() < 0.5 ? '#ffd98a' : '#8ad4ff') : '#10121c';
+    g.globalAlpha = lit ? 0.6 + Math.random() * 0.4 : 1;
+    g.fillRect(wx, wy, 26, 20);
     g.globalAlpha = 1;
   }
 });
@@ -317,35 +315,46 @@ function textTex(text, color) {
 //  WELT BAUEN
 // ============================================================
 const MAT = {
-  road:  new THREE.MeshLambertMaterial({ color: 0x16161e }),
-  walk:  new THREE.MeshLambertMaterial({ color: 0x22222c }),
-  gnd:   new THREE.MeshLambertMaterial({ color: 0x08080e }),
+  road:  new THREE.MeshStandardMaterial({ color: 0x1b1e28, roughness: 0.95 }),
+  walk:  new THREE.MeshStandardMaterial({ color: 0x272b38, roughness: 0.9 }),
+  gnd:   new THREE.MeshStandardMaterial({ color: 0x0d0f18, roughness: 1 }),
   dash:  new THREE.MeshBasicMaterial({ color: 0xb8b890 }),
-  pole:  new THREE.MeshLambertMaterial({ color: 0x2a2a33 }),
+  pole:  new THREE.MeshStandardMaterial({ color: 0x3a3f4c, metalness: 0.7, roughness: 0.35 }),
   lampOn:new THREE.MeshBasicMaterial({ color: 0xffd9a0 }),
 };
 
 function buildWorld(Lv) {
   aliens = []; pickups = []; particles = []; ufos = []; blobs = []; joints = [];
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(Lv.bg);
-  scene.fog = new THREE.Fog(Lv.bg, Lv.fogNear, Lv.fogFar);
+  // bg-Hex ist die gewünschte Bildschirmfarbe — für die Gamma-Stufe des Post-Shaders linearisieren
+  const bgCol = new THREE.Color(Lv.bg).convertSRGBToLinear();
+  scene.background = bgCol;
+  scene.fog = new THREE.Fog(bgCol.getHex(), Lv.fogNear, Lv.fogFar);
   scene.add(camera);
 
-  scene.add(new THREE.HemisphereLight(0x2a3a66, 0x0a0a12, 0.95));
-  const moonlight = new THREE.DirectionalLight(0x8899ff, 0.35);
-  moonlight.position.set(-30, 60, -40); scene.add(moonlight);
+  scene.add(new THREE.HemisphereLight(0x36466e, 0x141821, 0.55));
+  moonLight = new THREE.DirectionalLight(0xa9b6ff, 0.45);
+  moonLight.castShadow = true;
+  moonLight.shadow.mapSize.set(2048, 2048);
+  moonLight.shadow.camera.near = 5; moonLight.shadow.camera.far = 160;
+  moonLight.shadow.camera.left = -50; moonLight.shadow.camera.right = 50;
+  moonLight.shadow.camera.top = 50; moonLight.shadow.camera.bottom = -50;
+  moonLight.shadow.bias = -0.0005;
+  moonLight.position.set(-25, 55, -30);
+  scene.add(moonLight); scene.add(moonLight.target);
+  followLight = new THREE.PointLight(0xffd9a0, 0.4, 32);
+  followLight.position.set(0, 6, -4); scene.add(followLight);
 
   const len = Lv.length;
 
   // Boden / Straße / Gehwege
   const gnd = new THREE.Mesh(new THREE.PlaneGeometry(240, len + 160), MAT.gnd);
-  gnd.rotation.x = -Math.PI / 2; gnd.position.z = -len / 2; scene.add(gnd);
+  gnd.rotation.x = -Math.PI / 2; gnd.position.z = -len / 2; gnd.receiveShadow = true; scene.add(gnd);
   const road = new THREE.Mesh(new THREE.PlaneGeometry(13, len + 90), MAT.road);
-  road.rotation.x = -Math.PI / 2; road.position.set(0, 0.01, -len / 2 + 5); scene.add(road);
+  road.rotation.x = -Math.PI / 2; road.position.set(0, 0.01, -len / 2 + 5); road.receiveShadow = true; scene.add(road);
   [-8.2, 8.2].forEach((x) => {
     const w = new THREE.Mesh(new THREE.PlaneGeometry(3.4, len + 90), MAT.walk);
-    w.rotation.x = -Math.PI / 2; w.position.set(x, 0.02, -len / 2 + 5); scene.add(w);
+    w.rotation.x = -Math.PI / 2; w.position.set(x, 0.02, -len / 2 + 5); w.receiveShadow = true; scene.add(w);
   });
   // Mittelstreifen
   const dashGeo = new THREE.PlaneGeometry(0.32, 2.4);
@@ -361,39 +370,57 @@ function buildWorld(Lv) {
       const h = 12 + Math.random() * 22;
       const b = new THREE.Mesh(
         new THREE.BoxGeometry(10, h, 12),
-        new THREE.MeshLambertMaterial({ map: texWindows, color: new THREE.Color().setHSL(0.6 + Math.random() * 0.1, 0.15, 0.5 + Math.random() * 0.3) })
+        new THREE.MeshStandardMaterial({
+          map: texWindows, emissiveMap: texWindows, emissive: 0xffffff, emissiveIntensity: 0.5,
+          color: new THREE.Color().setHSL(0.6 + Math.random() * 0.1, 0.15, 0.5 + Math.random() * 0.3),
+          roughness: 0.85,
+        })
       );
       b.position.set(side * (17 + Math.random() * 5), h / 2, z);
+      b.castShadow = true; b.receiveShadow = true;
       scene.add(b);
     });
   }
 
   // Laternen mit Lichtkegel-Fake
-  const poleGeo = new THREE.CylinderGeometry(0.09, 0.12, 5.2, 6);
-  const headGeo = new THREE.SphereGeometry(0.22, 8, 6);
+  const poleGeo = new THREE.CylinderGeometry(0.09, 0.12, 5.2, 16);
+  const headGeo = new THREE.SphereGeometry(0.22, 20, 14);
   const poolGeo = new THREE.PlaneGeometry(7, 7);
   let lampSide = 1;
   for (let z = 2; z > -len; z -= 26) {
     lampSide *= -1;
     const x = lampSide * 7.2;
     const pole = new THREE.Mesh(poleGeo, MAT.pole);
-    pole.position.set(x, 2.6, z); scene.add(pole);
+    pole.position.set(x, 2.6, z); pole.castShadow = true; scene.add(pole);
     const head = new THREE.Mesh(headGeo, MAT.lampOn);
     head.position.set(x, 5.2, z); scene.add(head);
     const pool = new THREE.Mesh(poolGeo, new THREE.MeshBasicMaterial({ map: texPool, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
     pool.rotation.x = -Math.PI / 2; pool.position.set(x, 0.05, z); scene.add(pool);
   }
 
-  // Parkende Autos
+  // Parkende Autos (weiche, moderne Formen)
+  const wheelGeo = new THREE.CylinderGeometry(0.28, 0.28, 0.2, 18);
+  const wheelMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0e, roughness: 0.9 });
   for (let z = -14; z > -len; z -= 30 + Math.random() * 26) {
     const side = Math.random() < 0.5 ? -1 : 1;
     const car = new THREE.Group();
-    const col = new THREE.Color().setHSL(Math.random(), 0.45, 0.3);
-    const body = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.65, 4.2), new THREE.MeshLambertMaterial({ color: col }));
-    body.position.y = 0.5;
-    const top = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.55, 2.2), new THREE.MeshLambertMaterial({ color: col.clone().multiplyScalar(0.7) }));
-    top.position.set(0, 1.05, -0.2);
-    car.add(body, top);
+    const col = new THREE.Color().setHSL(Math.random(), 0.55, 0.38);
+    const body = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 28, 20),
+      new THREE.MeshStandardMaterial({ color: col, metalness: 0.6, roughness: 0.3 })
+    );
+    body.scale.set(0.95, 0.5, 2.1); body.position.y = 0.55; body.castShadow = true;
+    const cabin = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 24, 18),
+      new THREE.MeshStandardMaterial({ color: 0x10131c, metalness: 0.3, roughness: 0.12 })
+    );
+    cabin.scale.set(0.72, 0.42, 1.15); cabin.position.set(0, 0.92, -0.15); cabin.castShadow = true;
+    car.add(body, cabin);
+    [[-0.82, 1.25], [0.82, 1.25], [-0.82, -1.25], [0.82, -1.25]].forEach(([wx, wz]) => {
+      const wheel = new THREE.Mesh(wheelGeo, wheelMat);
+      wheel.rotation.z = Math.PI / 2; wheel.position.set(wx, 0.28, wz);
+      car.add(wheel);
+    });
     car.position.set(side * 5.6, 0, z);
     scene.add(car);
   }
@@ -409,12 +436,12 @@ function buildWorld(Lv) {
   }
   starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
   scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xccccff, size: 0.7, sizeAttenuation: false })));
-  const moon = new THREE.Mesh(new THREE.SphereGeometry(7, 12, 10), new THREE.MeshBasicMaterial({ color: 0xf5f0d8 }));
+  const moon = new THREE.Mesh(new THREE.SphereGeometry(7, 32, 24), new THREE.MeshBasicMaterial({ color: 0xf5f0d8 }));
   moon.position.set(-55, 75, -len - 80); scene.add(moon);
 
   // Party hinter dir
-  const club = new THREE.Mesh(new THREE.BoxGeometry(26, 12, 8), new THREE.MeshLambertMaterial({ color: 0x181822 }));
-  club.position.set(0, 6, 20); scene.add(club);
+  const club = new THREE.Mesh(new THREE.BoxGeometry(26, 12, 8), new THREE.MeshStandardMaterial({ color: 0x1b1d2a, roughness: 0.8 }));
+  club.position.set(0, 6, 20); club.castShadow = true; scene.add(club);
   const sign = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.5), new THREE.MeshBasicMaterial({ map: textTex('PARTY', '#ff44dd'), transparent: false }));
   sign.position.set(0, 7, 15.9); sign.rotation.y = Math.PI; scene.add(sign);
   partyLight = new THREE.PointLight(0xff44dd, 1.4, 40);
@@ -423,8 +450,8 @@ function buildWorld(Lv) {
   // ZUHAUSE
   const home = new THREE.Group();
   const pillarG = new THREE.BoxGeometry(0.9, 5.4, 0.9);
-  const pillarM = new THREE.MeshLambertMaterial({ color: 0x3a3040 });
-  [-2.1, 2.1].forEach((x) => { const p = new THREE.Mesh(pillarG, pillarM); p.position.set(x, 2.7, 0); home.add(p); });
+  const pillarM = new THREE.MeshStandardMaterial({ color: 0x4a3d52, roughness: 0.7 });
+  [-2.1, 2.1].forEach((x) => { const p = new THREE.Mesh(pillarG, pillarM); p.position.set(x, 2.7, 0); p.castShadow = true; home.add(p); });
   const lintel = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.9, 0.9), pillarM);
   lintel.position.y = 5.4; home.add(lintel);
   const door = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 4.6), new THREE.MeshBasicMaterial({ color: 0xffc060 }));
@@ -444,7 +471,7 @@ function buildWorld(Lv) {
   if (Lv.hallu) {
     for (let i = 0; i < 8; i++) {
       const b = new THREE.Mesh(
-        new THREE.SphereGeometry(0.6 + Math.random() * 0.9, 10, 8),
+        new THREE.SphereGeometry(0.6 + Math.random() * 0.9, 24, 18),
         new THREE.MeshBasicMaterial({
           color: [0xff66cc, 0x66ffcc, 0x66ccff][i % 3],
           transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false,
@@ -466,14 +493,14 @@ function buildWorld(Lv) {
 function spawnPickup(type, x, z) {
   const g = new THREE.Group();
   if (type === 'doener') {
-    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.32, 0.8, 8), new THREE.MeshLambertMaterial({ color: 0xc98b4b, emissive: 0x552200, emissiveIntensity: 0.4 }));
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.32, 0.8, 24), new THREE.MeshStandardMaterial({ color: 0xc98b4b, emissive: 0x552200, emissiveIntensity: 0.4, roughness: 0.6 }));
     cone.rotation.z = Math.PI; cone.position.y = 1.0; g.add(cone);
-    const salad = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 6), new THREE.MeshLambertMaterial({ color: 0x4faa3f }));
+    const salad = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 12), new THREE.MeshStandardMaterial({ color: 0x4faa3f, roughness: 0.7 }));
     salad.position.y = 1.42; g.add(salad);
   } else {
-    const bottle = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.55, 0.24), new THREE.MeshLambertMaterial({ color: 0x44aaff, emissive: 0x1144aa, emissiveIntensity: 0.5, transparent: true, opacity: 0.85 }));
+    const bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.55, 18), new THREE.MeshStandardMaterial({ color: 0x66bbff, emissive: 0x1144aa, emissiveIntensity: 0.45, transparent: true, opacity: 0.75, roughness: 0.1, metalness: 0.1 }));
     bottle.position.y = 1.1; g.add(bottle);
-    const cap = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.1, 0.12), new THREE.MeshLambertMaterial({ color: 0xffffff }));
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.1, 12), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }));
     cap.position.y = 1.42; g.add(cap);
   }
   const ring = new THREE.Mesh(
@@ -490,19 +517,19 @@ function spawnPickup(type, x, z) {
 function spawnAlien(nearX, nearZ) {
   if (aliens.length >= L.maxAliens) return;
   const g = new THREE.Group();
-  const bodyMat = new THREE.MeshLambertMaterial({ color: L.alienColor, emissive: L.alienColor, emissiveIntensity: 0.35 });
-  const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.32, 0.55, 4, 8), bodyMat);
-  body.position.y = 0.9; g.add(body);
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 10, 8), bodyMat);
-  head.scale.set(1, 1.3, 0.95); head.position.y = 1.72; g.add(head);
-  const eyeMat = new THREE.MeshBasicMaterial({ color: 0x0a0a0a });
+  const bodyMat = new THREE.MeshStandardMaterial({ color: L.alienColor, emissive: L.alienColor, emissiveIntensity: 0.35, roughness: 0.45 });
+  const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.32, 0.55, 8, 24), bodyMat);
+  body.position.y = 0.9; body.castShadow = true; g.add(body);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 24, 18), bodyMat);
+  head.scale.set(1, 1.3, 0.95); head.position.y = 1.72; head.castShadow = true; g.add(head);
+  const eyeMat = new THREE.MeshStandardMaterial({ color: 0x050508, roughness: 0.15 });
   [-0.13, 0.13].forEach((x) => {
-    const e = new THREE.Mesh(new THREE.SphereGeometry(0.09, 6, 5), eyeMat);
+    const e = new THREE.Mesh(new THREE.SphereGeometry(0.09, 14, 10), eyeMat);
     e.scale.set(1, 1.6, 0.6); e.position.set(x, 1.78, 0.24); g.add(e);
   });
   [-1, 1].forEach((s) => {
-    const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.07, 0.5, 3, 6), bodyMat);
-    arm.position.set(s * 0.45, 1.0, 0.1); arm.rotation.z = s * 2.5; g.add(arm);
+    const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.07, 0.5, 6, 14), bodyMat);
+    arm.position.set(s * 0.45, 1.0, 0.1); arm.rotation.z = s * 2.5; arm.castShadow = true; g.add(arm);
   });
   const glow = new THREE.Mesh(
     new THREE.PlaneGeometry(1.8, 1.8),
@@ -554,12 +581,12 @@ function burst(pos, color, n) {
 // ---------------------------------------------------------- UFO
 function spawnUfo() {
   const g = new THREE.Group();
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 3.2, 0.6, 14), new THREE.MeshLambertMaterial({ color: 0x8890a8, emissive: 0x222833, emissiveIntensity: 0.6 }));
-  g.add(body);
-  const dome = new THREE.Mesh(new THREE.SphereGeometry(1.2, 10, 8), new THREE.MeshLambertMaterial({ color: 0x66ffee, emissive: 0x22aa99, emissiveIntensity: 0.8, transparent: true, opacity: 0.8 }));
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 3.2, 0.6, 36), new THREE.MeshStandardMaterial({ color: 0x8890a8, emissive: 0x222833, emissiveIntensity: 0.6, metalness: 0.85, roughness: 0.25 }));
+  body.castShadow = true; g.add(body);
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(1.2, 24, 18), new THREE.MeshStandardMaterial({ color: 0x66ffee, emissive: 0x22aa99, emissiveIntensity: 0.8, transparent: true, opacity: 0.8, roughness: 0.1 }));
   dome.position.y = 0.7; g.add(dome);
   for (let i = 0; i < 6; i++) {
-    const l = new THREE.Mesh(new THREE.SphereGeometry(0.18, 6, 5), new THREE.MeshBasicMaterial({ color: 0xff66cc }));
+    const l = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 8), new THREE.MeshBasicMaterial({ color: 0xff66cc }));
     const a = (i / 6) * Math.PI * 2;
     l.position.set(Math.cos(a) * 2.7, -0.15, Math.sin(a) * 2.7); g.add(l);
   }
@@ -577,9 +604,9 @@ function spawnUfo() {
 // ---------------------------------------------------------- JOINT-STERNSCHNUPPE (Weed)
 function spawnJoint() {
   const g = new THREE.Group();
-  const paper = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.09, 1.5, 6), new THREE.MeshBasicMaterial({ color: 0xf5f0e0 }));
+  const paper = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.09, 1.5, 14), new THREE.MeshBasicMaterial({ color: 0xf5f0e0 }));
   paper.rotation.z = Math.PI / 2; g.add(paper);
-  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.11, 6, 5), new THREE.MeshBasicMaterial({ color: 0xff7722 }));
+  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 8), new THREE.MeshBasicMaterial({ color: 0xff7722 }));
   tip.position.x = 0.8; g.add(tip);
   g.position.set(-42, 12 + Math.random() * 9, P.z - 30 - Math.random() * 20);
   g.rotation.z = -0.35;
@@ -592,14 +619,14 @@ function spawnJoint() {
 // ============================================================
 function buildGun() {
   gun = new THREE.Group();
-  const dark = new THREE.MeshLambertMaterial({ color: 0x23232b });
-  const barrel = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.07, 0.44), dark);
-  barrel.position.set(0, 0.02, -0.28); gun.add(barrel);
+  const dark = new THREE.MeshStandardMaterial({ color: 0x2a2d36, metalness: 0.8, roughness: 0.3 });
+  const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.04, 0.46, 18), dark);
+  barrel.rotation.x = Math.PI / 2; barrel.position.set(0, 0.02, -0.28); gun.add(barrel);
   const body = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.15, 0.22), dark);
   body.position.set(0, -0.03, -0.02); gun.add(body);
   const grip = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.19, 0.1), dark);
   grip.position.set(0, -0.17, 0.04); grip.rotation.x = 0.35; gun.add(grip);
-  const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.074, 0.018, 0.3), new THREE.MeshBasicMaterial({ color: 0x33ffee }));
+  const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.074, 0.018, 0.3), new THREE.MeshBasicMaterial({ color: 0x66e0ff }));
   stripe.position.set(0, 0.062, -0.2); gun.add(stripe);
   muzzle = new THREE.Mesh(
     new THREE.PlaneGeometry(0.5, 0.5),
@@ -687,7 +714,7 @@ function buildMenu() {
 function openIntro(i) {
   levelIdx = i; L = LEVELS[i];
   state = 'intro';
-  $('introTape').textContent = '⏵ PLAY · ' + L.tape;
+  $('introTape').textContent = L.tape;
   $('introTitle').textContent = L.circle;
   $('introDrug').textContent = L.drug;
   $('introText').textContent = L.intro;
@@ -701,7 +728,7 @@ function startLevel() {
     hp: 100, rausch: L.key === 'koks' ? 100 : 0, bob: 0, rollKick: 0, shake: 0,
     ammo: 8, reloading: false, kills: 0, time: 0, dmgTaken: 0, clarity: 0,
     stumbleT: 4 + Math.random() * 4, spawnT: 3.5, msgT: 9, ufoT: L.ufoEvery * 0.6,
-    jointT: 6, glitchT: 3, heartT: 0.8,
+    jointT: 6, heartT: 0.8,
     clockSec: L.clock[0] * 3600 + L.clock[1] * 60,
   });
   camera.fov = L.fov; camera.updateProjectionMatrix();
@@ -735,12 +762,12 @@ function levelComplete() {
       `GESAMTZEIT: <b>${totals.time.toFixed(1)}s</b><br>` +
       `ALIENS GESAMT: <b>${totals.kills}</b><br>` +
       `SCHADEN GESAMT: <b>${Math.round(totals.dmg)}</b><br>` +
-      `VERLEIH-BEWERTUNG: <b>${'★'.repeat(Math.max(1, 5 - Math.floor(totals.dmg / 60)))}</b>`;
+      `BEWERTUNG: <b>${'★'.repeat(Math.max(1, 5 - Math.floor(totals.dmg / 60)))}</b>`;
     show('win');
   } else {
     $('doneTitle').textContent = 'ZUHAUSE ANGEKOMMEN';
     $('doneStats').innerHTML = stats;
-    $('nextBtn').textContent = '⏭ NÄCHSTES TAPE: ' + LEVELS[levelIdx + 1].drug;
+    $('nextBtn').textContent = '⏭ NÄCHSTES LEVEL: ' + LEVELS[levelIdx + 1].drug;
     show('done');
   }
   buildMenu();
@@ -796,7 +823,6 @@ $('winMenuBtn').addEventListener('click', () => { state = 'menu'; buildMenu(); s
 function damagePlayer(dmg) {
   P.hp -= dmg; P.dmgTaken += dmg;
   P.shake = Math.min(P.shake + 0.5, 1);
-  fx.glitch = 1;
   flashScreen(0.45);
   SFX.hurt();
   if (P.hp <= 0) {
@@ -891,6 +917,11 @@ function updatePlaying(dt) {
     camera.fov = L.fov + Math.sin(t * 0.55) * L.breathe * clar;
     camera.updateProjectionMatrix();
   }
+
+  // Licht folgt dem Spieler (Schatten + Straßenglow)
+  moonLight.position.set(P.x - 25, 55, P.z - 30);
+  moonLight.target.position.set(P.x, 0, P.z - 10);
+  followLight.position.set(P.x, 6, P.z - 4);
 
   // Waffen-Recoil
   gunRecoil *= Math.exp(-9 * dt);
@@ -1025,10 +1056,6 @@ function updatePlaying(dt) {
     showMsg(L.msgs[Math.floor(Math.random() * L.msgs.length)], 3.2);
   }
 
-  // ------- VHS-Glitch gelegentlich
-  P.glitchT -= dt;
-  if (P.glitchT <= 0) { P.glitchT = 5 + Math.random() * 7; fx.glitch = Math.max(fx.glitch, 0.7); }
-
   // ------- Ziel erreicht?
   if (P.z <= -L.length + 2.5) { levelComplete(); return; }
 
@@ -1045,7 +1072,6 @@ function updatePlaying(dt) {
   // ------- FX-Ziele setzen (mit Klarheits-Dämpfung)
   const F = L.fx;
   fxLerp('wob', F.wob * clar, dt); fxLerp('dbl', F.dbl * clar, dt);
-  fxLerp('noise', F.noise, dt); fxLerp('aber', F.aber, dt);
   fxLerp('sat', F.sat, dt); fxLerp('vig', F.vig, dt);
   fx.wobFreq = F.wobFreq;
   for (let i = 0; i < 3; i++) fx.tint[i] += (F.tint[i] - fx.tint[i]) * Math.min(1, dt * 2);
@@ -1058,8 +1084,13 @@ function updateMenu(dt, t) {
   camera.position.set(Math.sin(t * 0.1) * 3, 2.2, -((t * 1.2) % 200));
   camera.rotation.set(-0.03, Math.sin(t * 0.07) * 0.25, Math.sin(t * 0.13) * 0.02);
   if (partyLight) partyLight.color.setHSL((t * 0.4) % 1, 0.9, 0.55);
-  fxLerp('wob', 0.3, dt); fxLerp('dbl', 0, dt); fxLerp('noise', 0.14, dt);
-  fxLerp('aber', 2, dt); fxLerp('sat', 1.1, dt); fxLerp('vig', 0.6, dt);
+  if (moonLight) {
+    moonLight.position.set(camera.position.x - 25, 55, camera.position.z - 30);
+    moonLight.target.position.set(camera.position.x, 0, camera.position.z - 10);
+  }
+  if (followLight) followLight.position.set(camera.position.x, 6, camera.position.z - 4);
+  fxLerp('wob', 0.15, dt); fxLerp('dbl', 0, dt);
+  fxLerp('sat', 1.05, dt); fxLerp('vig', 0.35, dt);
   fx.wobFreq = 0.7;
 }
 
@@ -1069,6 +1100,7 @@ function updateMenu(dt, t) {
 let last = performance.now(), elapsed = 0;
 function loop(now) {
   requestAnimationFrame(loop);
+  if (canvas.width === 0 || canvas.height === 0) onResize(); // Start im Hintergrund-Tab abfangen
   const dt = Math.min((now - last) / 1000, 0.05);
   last = now; elapsed += dt;
 
@@ -1077,13 +1109,12 @@ function loop(now) {
 
   // FX-Abkling
   fx.pulse *= Math.exp(-4 * dt);
-  fx.glitch *= Math.exp(-6 * dt);
 
   const U = postMat.uniforms;
   U.time.value = elapsed;
-  U.uNoise.value = fx.noise; U.uAber.value = fx.aber; U.uDouble.value = fx.dbl;
+  U.uDouble.value = fx.dbl;
   U.uWobAmp.value = fx.wob; U.uWobFreq.value = fx.wobFreq; U.uVig.value = fx.vig;
-  U.uGlitch.value = fx.glitch; U.uPulse.value = fx.pulse; U.uSat.value = fx.sat;
+  U.uPulse.value = fx.pulse; U.uSat.value = fx.sat;
   U.uTint.value.set(fx.tint[0], fx.tint[1], fx.tint[2]);
 
   if (scene) {

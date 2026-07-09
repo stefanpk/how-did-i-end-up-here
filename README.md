@@ -1,6 +1,6 @@
-# HOW DID I END UP HERE — VHS Edition
+# HOW DID I END UP HERE
 
-*Nach Hause von der Party kommen. 3 Tapes. 3 Räusche. Aliens inklusive.*
+*Nach Hause von der Party kommen. 3 Level. 3 Räusche. Aliens inklusive.*
 
 ## Starten
 
@@ -28,8 +28,9 @@ Unterwegs: **Aliens abknallen**, Döner (+30 Leben) und Wasser (kurz klar sehen)
 ## Technik
 
 - Three.js (lokal, `three.min.js`) — komplett offline lauffähig
+- Moderner 3D-Look: Echtzeit-Schatten (PCF Soft Shadows), PBR-Materialien, ACES-Tone-Mapping, Antialiasing in voller Auflösung
 - Alle 3D-Modelle prozedural gebaut, alle Sounds & Musik live per WebAudio synthetisiert — keine Asset-Dateien
-- VHS-Look über einen eigenen Post-Processing-Shader (Scanlines, Rauschen, Chromatic Aberration, Tracking-Glitches) + Rausch-Effekte pro Level (Wobble, Doppeltsehen, Herzschlag-Puls)
+- Rausch-Effekte pro Level als dezenter Screen-Space-Shader (Wobble, Doppeltsehen, Herzschlag-Puls, Farb-Grading)
 - Fortschritt wird im Browser gespeichert (localStorage)
 
 *Satire. Im echten Leben: Drogen ruinieren jeden Heimweg. 18+*
