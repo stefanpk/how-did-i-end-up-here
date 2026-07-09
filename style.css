@@ -1,0 +1,131 @@
+/* ============ HOW DID I END UP HERE — VHS UI ============ */
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:100%; height:100%; overflow:hidden; background:#000; }
+body { font-family:"Courier New", ui-monospace, monospace; color:#e8e8e8; user-select:none; }
+
+#c { position:fixed; inset:0; width:100%; height:100%; display:block; cursor:crosshair; }
+
+.hidden { display:none !important; }
+
+/* ---------- VHS Text-Glow ---------- */
+.glitch, h1, h2, .vhs-label, #hud div {
+  text-shadow: 1.5px 0 rgba(255,0,60,.55), -1.5px 0 rgba(0,180,255,.55), 0 0 8px rgba(255,255,255,.25);
+}
+
+/* ---------- Scanline-Overlay (immer sichtbar) ---------- */
+#scanlines {
+  position:fixed; inset:0; pointer-events:none; z-index:50;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+  mix-blend-mode:multiply;
+}
+#scanlines::after {
+  content:""; position:absolute; inset:0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.5) 100%);
+}
+
+/* ---------- Damage Flash ---------- */
+#flash {
+  position:fixed; inset:0; pointer-events:none; z-index:40;
+  background:#f00; opacity:0; transition:opacity .35s;
+}
+
+/* ---------- Overlays ---------- */
+.overlay {
+  position:fixed; inset:0; z-index:60;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:18px; text-align:center; padding:24px;
+  background: rgba(2,2,8,.88);
+}
+.overlay h1 { font-size:clamp(30px,6vw,72px); letter-spacing:4px; transform:scaleY(1.25); }
+.overlay h2 { font-size:clamp(22px,4vw,44px); letter-spacing:3px; transform:scaleY(1.2); }
+.overlay p { max-width:640px; line-height:1.6; color:#bbb; font-size:16px; }
+
+.subtitle { color:#9ad; letter-spacing:2px; }
+.vhs-label { color:#fff; opacity:.75; letter-spacing:3px; font-size:14px; }
+.choose { margin-top:14px; letter-spacing:2px; color:#fd5; }
+.controls { margin-top:10px; font-size:14px; color:#8aa; }
+.disclaimer { font-size:11px; color:#556; max-width:520px; }
+
+.drugtag {
+  display:inline-block; padding:4px 18px; border:2px solid #f4d;
+  color:#f4d; letter-spacing:6px; font-weight:bold; font-size:20px;
+  box-shadow:0 0 14px rgba(255,68,221,.4), inset 0 0 14px rgba(255,68,221,.15);
+}
+
+/* ---------- Freundeskreis-Karten ---------- */
+#circles { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+.circle-card {
+  width:210px; padding:18px 14px; border:2px solid #3af; cursor:pointer;
+  background:rgba(10,20,40,.5); transition:transform .12s, box-shadow .12s;
+  box-shadow:0 0 12px rgba(51,170,255,.25);
+}
+.circle-card:hover { transform:translateY(-4px) scale(1.03); box-shadow:0 0 24px rgba(51,170,255,.6); }
+.circle-card .cname { font-weight:bold; letter-spacing:1px; font-size:15px; }
+.circle-card .cdrug { margin-top:6px; font-size:22px; letter-spacing:4px; font-weight:bold; }
+.circle-card .clvl  { margin-top:6px; font-size:11px; color:#9ab; }
+.circle-card.locked { border-color:#444; color:#555; cursor:not-allowed; box-shadow:none; filter:saturate(0); }
+.circle-card.locked:hover { transform:none; }
+.circle-card.done { border-color:#3f6; }
+.circle-card .cbest { margin-top:4px; font-size:11px; color:#6d8; }
+.shake { animation:shake .3s; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+/* ---------- Buttons ---------- */
+.btn {
+  font-family:inherit; font-size:18px; letter-spacing:2px; padding:12px 28px;
+  background:#0a0a14; color:#fff; border:2px solid #fff; cursor:pointer;
+  text-shadow:1px 0 rgba(255,0,60,.5), -1px 0 rgba(0,180,255,.5);
+}
+.btn:hover { background:#fff; color:#000; text-shadow:none; }
+.btn2 { border-color:#667; color:#99a; font-size:14px; }
+
+.statsbox {
+  border:1px dashed #567; padding:14px 26px; line-height:1.9; letter-spacing:1px;
+  color:#cde; font-size:15px; text-align:left;
+}
+.statsbox b { color:#fd5; }
+
+/* ---------- Titel-Glitch ---------- */
+.glitch { position:relative; }
+.glitch::before, .glitch::after {
+  content:attr(data-text); position:absolute; inset:0; overflow:hidden;
+}
+.glitch::before { color:#f0c; clip-path:inset(20% 0 60% 0); animation:gl1 2.7s infinite linear alternate; opacity:.6; }
+.glitch::after  { color:#0cf; clip-path:inset(65% 0 15% 0); animation:gl2 3.1s infinite linear alternate; opacity:.6; }
+@keyframes gl1 { 0%,92%{transform:none} 94%{transform:translate(-5px,2px)} 97%{transform:translate(4px,-1px)} 100%{transform:none} }
+@keyframes gl2 { 0%,90%{transform:none} 93%{transform:translate(5px,1px)}  96%{transform:translate(-4px,2px)} 100%{transform:none} }
+h1.red { color:#f33; }
+
+/* ---------- HUD ---------- */
+#hud { position:fixed; inset:0; pointer-events:none; z-index:30; font-size:17px; letter-spacing:2px; }
+#hud > div { position:absolute; }
+
+#rec { top:18px; left:22px; color:#fff; }
+#rec .dot { color:#f22; animation:blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity:0; } }
+#clock { top:18px; right:22px; }
+#channel { top:44px; right:22px; font-size:13px; color:#9cf; }
+#sp { top:44px; left:22px; font-size:13px; color:#aaa; }
+
+#crosshair {
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:26px; color:rgba(255,255,255,.9);
+}
+
+#stats { bottom:22px; left:22px; display:flex; flex-direction:column; gap:8px; }
+.bar-row { display:flex; align-items:center; gap:10px; }
+.bar-label { width:110px; font-size:12px; }
+.bar { width:200px; height:14px; border:1px solid rgba(255,255,255,.7); background:rgba(0,0,0,.5); }
+.fill { height:100%; width:100%; transition:width .2s; }
+.fill.hp { background:linear-gradient(90deg,#2f2,#af4); box-shadow:0 0 8px rgba(80,255,80,.5); }
+.fill.rausch { background:linear-gradient(90deg,#f4d,#f80); box-shadow:0 0 8px rgba(255,80,200,.5); }
+
+#ammo { bottom:22px; right:22px; font-size:20px; color:#fd5; letter-spacing:3px; }
+#dist { bottom:52px; right:22px; font-size:14px; color:#9cf; }
+
+#msg {
+  top:20%; left:50%; transform:translateX(-50%);
+  font-size:20px; color:#fff; text-align:center; opacity:0; transition:opacity .3s;
+  max-width:80vw;
+}
+#hint { bottom:90px; left:50%; transform:translateX(-50%); font-size:13px; color:#789; }

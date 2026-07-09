@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HOW DID I END UP HERE — VHS Edition</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<!-- ======= HUD ======= -->
+<div id="hud" class="hidden">
+  <div id="rec"><span class="dot">●</span> REC</div>
+  <div id="clock">23:58:00</div>
+  <div id="channel">AV-1</div>
+  <div id="sp">SP</div>
+
+  <div id="crosshair">+</div>
+
+  <div id="stats">
+    <div class="bar-row"><span class="bar-label">ZUSTAND</span><div class="bar"><div id="hpbar" class="fill hp"></div></div></div>
+    <div class="bar-row"><span class="bar-label" id="rauschlabel">MUNCHIES</span><div class="bar"><div id="rauschbar" class="fill rausch"></div></div></div>
+  </div>
+
+  <div id="ammo">▮▮▮▮▮▮▮▮</div>
+  <div id="dist">→ ZUHAUSE 280m</div>
+  <div id="msg"></div>
+  <div id="hint"></div>
+</div>
+
+<div id="flash"></div>
+<div id="scanlines"></div>
+
+<!-- ======= MENÜ ======= -->
+<div id="menu" class="overlay">
+  <div class="vhs-label">⏵ PLAY &nbsp;·&nbsp; TAPE 1/3 &nbsp;·&nbsp; SP</div>
+  <h1 class="glitch" data-text="HOW DID I END UP HERE">HOW DID I END UP HERE</h1>
+  <div class="subtitle">— nach Hause von der Party kommen —</div>
+
+  <div class="choose">WÄHLE DEINEN FREUNDESKREIS:</div>
+  <div id="circles"></div>
+
+  <div class="controls">
+    <b>WASD</b> laufen &nbsp;·&nbsp; <b>MAUS</b> umsehen &nbsp;·&nbsp; <b>KLICK</b> schießen &nbsp;·&nbsp; <b>R</b> nachladen &nbsp;·&nbsp; <b>ESC</b> pause
+  </div>
+  <div class="disclaimer">Satire-Game im VHS-Look. Im echten Leben: Drogen ruinieren jeden Heimweg. 18+</div>
+</div>
+
+<!-- ======= LEVEL-INTRO ======= -->
+<div id="intro" class="overlay hidden">
+  <div class="vhs-label" id="introTape">⏵ PLAY · TAPE 1/3</div>
+  <h2 id="introTitle">KIFFER-FREUNDESKREIS</h2>
+  <div id="introDrug" class="drugtag">WEED</div>
+  <p id="introText"></p>
+  <button id="introBtn" class="btn">▶ AUFNAHME STARTEN</button>
+</div>
+
+<!-- ======= PAUSE ======= -->
+<div id="pause" class="overlay hidden">
+  <h2>⏸ PAUSE</h2>
+  <p>Band angehalten.</p>
+  <button id="resumeBtn" class="btn">▶ WEITER</button>
+  <button id="quitBtn" class="btn btn2">⏏ ZURÜCK ZUM MENÜ</button>
+</div>
+
+<!-- ======= GAME OVER ======= -->
+<div id="dead" class="overlay hidden">
+  <h1 class="glitch red" data-text="FILMRISS">FILMRISS</h1>
+  <p id="deadText">Du bist nicht angekommen.</p>
+  <button id="retryBtn" class="btn">⏪ NOCHMAL VERSUCHEN</button>
+  <button id="deadMenuBtn" class="btn btn2">⏏ MENÜ</button>
+</div>
+
+<!-- ======= LEVEL GESCHAFFT ======= -->
+<div id="done" class="overlay hidden">
+  <div class="vhs-label">⏹ STOP · TAPE ENDE</div>
+  <h2 id="doneTitle">ZUHAUSE ANGEKOMMEN</h2>
+  <div id="doneStats" class="statsbox"></div>
+  <button id="nextBtn" class="btn">⏭ NÄCHSTES TAPE</button>
+  <button id="doneMenuBtn" class="btn btn2">⏏ MENÜ</button>
+</div>
+
+<!-- ======= SIEG ======= -->
+<div id="win" class="overlay hidden">
+  <div class="vhs-label">⏹ STOP · SAMMLUNG KOMPLETT</div>
+  <h1 class="glitch" data-text="ZUHAUSE. ENDLICH.">ZUHAUSE. ENDLICH.</h1>
+  <p>Alle drei Nächte überlebt. Dein Bett hat dich vermisst.</p>
+  <div id="winStats" class="statsbox"></div>
+  <button id="winMenuBtn" class="btn">⏏ ZURÜCK ZUM MENÜ</button>
+</div>
+
+<script src="three.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
